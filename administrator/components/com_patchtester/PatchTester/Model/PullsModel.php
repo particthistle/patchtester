@@ -8,6 +8,7 @@
 
 namespace PatchTester\Model;
 
+use Joomla\CMS\Filter\InputFilter;
 use Joomla\CMS\Pagination\Pagination;
 use Joomla\Registry\Registry;
 use PatchTester\GitHub\Exception\UnexpectedResponse;
@@ -370,7 +371,8 @@ class PullsModel extends \JModelDatabase
 			return array('complete' => true);
 		}
 
-		$data = array();
+		$data   = array();
+		$filter = InputFilter::getInstance();
 
 		foreach ($pulls as $pull)
 		{
@@ -396,7 +398,7 @@ class PullsModel extends \JModelDatabase
 				$pullData = array(
 					(int) $pull->number,
 					$this->getDb()->quote(\JHtml::_('string.truncate', $pull->title, 150)),
-					$this->getDb()->quote(\JHtml::_('string.truncate', $pull->body, 100)),
+					$this->getDb()->quote(\JHtml::_('string.truncate', $filter->clean($pull->body, 'raw'), 100)),
 					$this->getDb()->quote($pull->pull_request->html_url),
 					(int) $isRTC,
 					$this->getDb()->quote($branch),
