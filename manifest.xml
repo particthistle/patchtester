@@ -22,13 +22,13 @@
 		<description>Joomla! CMS Patch Tester Component</description>
 		<element>com_patchtester</element>
 		<type>component</type>
-		<version>3.0.0-beta4</version>
+		<version>3.0.0-rc</version>
 		<client>administrator</client>
-		<infourl title="Patch Tester Component">https://github.com/joomla-extensions/patchtester/releases/tag/3.0.0-beta4</infourl>
+		<infourl title="Patch Tester Component">https://github.com/joomla-extensions/patchtester/releases/tag/3.0.0.rc</infourl>
 		<downloads>
-			<downloadurl type="full" format="zip">https://github.com/joomla-extensions/patchtester/releases/download/3.0.0-beta4/com_patchtester.zip</downloadurl>
+			<downloadurl type="full" format="zip">https://github.com/joomla-extensions/patchtester/releases/download/3.0.0.rc/com_patchtester.zip</downloadurl>
 		</downloads>
-		<sha384>dc5a4bf9d8d9f4ed9ce40d73885d543a2a8b3277e46519e8cf4759d8e1b5f0901b7d438033ffd0339afcb6d6a7536eb6</sha384>
+		<sha384>adb3d5521c136266eb110c42d466578bd4c8e16c4ef1d989aeeb4e383bdaee20a68297e069a0e9273ba918850bdd59a0</sha384>
 		<tags>
 			<tag>beta</tag>
 		</tags>

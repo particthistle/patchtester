@@ -15,7 +15,7 @@ use PatchTester\Model\AbstractModel;
 /**
  * Base HTML view for the patch testing component
  *
- * @since  __DEPLOY_VERSION__
+ * @since  3.0.0
  */
 abstract class AbstractHtmlView extends AbstractView
 {
@@ -23,7 +23,7 @@ abstract class AbstractHtmlView extends AbstractView
 	 * The view layout.
 	 *
 	 * @var    string
-	 * @since  __DEPLOY_VERSION__
+	 * @since  3.0.0
 	 */
 	protected $layout = 'default';
 
@@ -31,7 +31,7 @@ abstract class AbstractHtmlView extends AbstractView
 	 * The paths queue.
 	 *
 	 * @var    SplPriorityQueue
-	 * @since  __DEPLOY_VERSION__
+	 * @since  3.0.0
 	 */
 	protected $paths;
 
@@ -41,7 +41,7 @@ abstract class AbstractHtmlView extends AbstractView
 	 * @param   AbstractModel     $model  The model object.
 	 * @param   SplPriorityQueue  $paths  The paths queue.
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   3.0.0
 	 */
 	public function __construct(AbstractModel $model, \SplPriorityQueue $paths = null)
 	{
@@ -58,7 +58,7 @@ abstract class AbstractHtmlView extends AbstractView
 	 *
 	 * @return  string  The escaped output.
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   3.0.0
 	 */
 	public function escape($output)
 	{
@@ -71,7 +71,7 @@ abstract class AbstractHtmlView extends AbstractView
 	 *
 	 * @return  string  The layout name.
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   3.0.0
 	 */
 	public function getLayout()
 	{
@@ -85,7 +85,7 @@ abstract class AbstractHtmlView extends AbstractView
 	 *
 	 * @return  mixed  The layout file name if found, false otherwise.
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   3.0.0
 	 */
 	public function getPath($layout)
 	{
@@ -103,7 +103,7 @@ abstract class AbstractHtmlView extends AbstractView
 	 *
 	 * @return  SplPriorityQueue  The paths queue.
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   3.0.0
 	 */
 	public function getPaths()
 	{
@@ -117,7 +117,7 @@ abstract class AbstractHtmlView extends AbstractView
 	 *
 	 * @return  string  The output of the the template script.
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   3.0.0
 	 * @throws  \RuntimeException
 	 */
 	public function loadTemplate($tpl = null)
@@ -162,7 +162,7 @@ abstract class AbstractHtmlView extends AbstractView
 	 *
 	 * @return  string  The rendered view.
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   3.0.0
 	 * @throws  RuntimeException
 	 */
 	public function render()
@@ -195,7 +195,7 @@ abstract class AbstractHtmlView extends AbstractView
 	 *
 	 * @return  $this
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   3.0.0
 	 */
 	public function setLayout($layout)
 	{
@@ -211,7 +211,7 @@ abstract class AbstractHtmlView extends AbstractView
 	 *
 	 * @return  $this
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   3.0.0
 	 */
 	public function setPaths(\SplPriorityQueue $paths)
 	{

@@ -13,7 +13,7 @@ use PatchTester\Model\AbstractModel;
 /**
  * Base view for the patch testing component
  *
- * @since  __DEPLOY_VERSION__
+ * @since  3.0.0
  */
 abstract class AbstractView
 {
@@ -21,7 +21,7 @@ abstract class AbstractView
 	 * The model object.
 	 *
 	 * @var    AbstractModel
-	 * @since  __DEPLOY_VERSION__
+	 * @since  3.0.0
 	 */
 	protected $model;
 
@@ -30,7 +30,7 @@ abstract class AbstractView
 	 *
 	 * @param   AbstractModel  $model  The model object.
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   3.0.0
 	 */
 	public function __construct(AbstractModel $model)
 	{
@@ -44,7 +44,7 @@ abstract class AbstractView
 	 *
 	 * @return  string  The escaped output.
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   3.0.0
 	 */
 	public function escape($output)
 	{

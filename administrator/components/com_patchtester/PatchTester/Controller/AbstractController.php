@@ -25,7 +25,7 @@ abstract class AbstractController
 	 * The active application
 	 *
 	 * @var    CMSApplication
-	 * @since  __DEPLOY_VERSION__
+	 * @since  3.0.0
 	 */
 	protected $app;
 
@@ -65,7 +65,7 @@ abstract class AbstractController
 	 *
 	 * @return  CMSApplication
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   3.0.0
 	 */
 	public function getApplication()
 	{
@@ -77,7 +77,7 @@ abstract class AbstractController
 	 *
 	 * @return  Input
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   3.0.0
 	 */
 	public function getInput()
 	{

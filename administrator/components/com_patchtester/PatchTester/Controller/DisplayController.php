@@ -24,7 +24,7 @@ class DisplayController extends AbstractController
 	 * Default ordering value
 	 *
 	 * @var    string
-	 * @since  __DEPLOY_VERSION__
+	 * @since  3.0.0
 	 */
 	protected $defaultFullOrdering = 'a.pull_id DESC';
 

@@ -14,7 +14,7 @@ use Joomla\Registry\Registry;
 /**
  * Base model for the patch testing component
  *
- * @since  __DEPLOY_VERSION__
+ * @since  3.0.0
  */
 abstract class AbstractModel
 {
@@ -22,7 +22,7 @@ abstract class AbstractModel
 	 * The database driver.
 	 *
 	 * @var    \JDatabaseDriver
-	 * @since  __DEPLOY_VERSION__
+	 * @since  3.0.0
 	 */
 	protected $db;
 
@@ -30,7 +30,7 @@ abstract class AbstractModel
 	 * The model state.
 	 *
 	 * @var    Registry
-	 * @since  __DEPLOY_VERSION__
+	 * @since  3.0.0
 	 */
 	protected $state;
 
@@ -40,7 +40,7 @@ abstract class AbstractModel
 	 * @param   Registry          $state  The model state.
 	 * @param   \JDatabaseDriver  $db     The database adpater.
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   3.0.0
 	 */
 	public function __construct(Registry $state = null, \JDatabaseDriver $db = null)
 	{
@@ -53,7 +53,7 @@ abstract class AbstractModel
 	 *
 	 * @return  \JDatabaseDriver
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   3.0.0
 	 */
 	public function getDb()
 	{
@@ -65,7 +65,7 @@ abstract class AbstractModel
 	 *
 	 * @return  Registry
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   3.0.0
 	 */
 	public function getState()
 	{
@@ -79,7 +79,7 @@ abstract class AbstractModel
 	 *
 	 * @return  void
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   3.0.0
 	 */
 	public function setDb(\JDatabaseDriver $db)
 	{
@@ -93,7 +93,7 @@ abstract class AbstractModel
 	 *
 	 * @return  void
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   3.0.0
 	 */
 	public function setState(Registry $state)
 	{

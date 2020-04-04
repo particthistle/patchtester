@@ -2,12 +2,12 @@
 <extension type="component" version="3.6" method="upgrade">
 	<name>com_patchtester</name>
 	<author>Joomla! Project</author>
-	<creationDate>01-September-2018</creationDate>
+	<creationDate>04-April-2020</creationDate>
 	<copyright>(C) 2011 - 2012 Ian MacLennan, (C) 2013 - 2018 Open Source Matters, Inc. All rights reserved.</copyright>
 	<license>GNU General Public License version 2 or later</license>
 	<authorEmail>admin@joomla.org</authorEmail>
 	<authorUrl>https://www.joomla.org</authorUrl>
-	<version>3.0.0-beta5-dev</version>
+	<version>3.0.0-rc</version>
 	<description>COM_PATCHTESTER_XML_DESCRIPTION</description>
 	<scriptfile>script.php</scriptfile>
 	<install>

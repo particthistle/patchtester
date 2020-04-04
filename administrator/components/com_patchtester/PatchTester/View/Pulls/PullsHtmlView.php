@@ -163,7 +163,7 @@ class PullsHtmlView extends DefaultHtmlView
 	 *
 	 * @return  array
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   3.0.0
 	 */
 	protected function getLimitOptions()
 	{
