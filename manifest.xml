@@ -30,7 +30,7 @@
 		</downloads>
 		<sha384>adb3d5521c136266eb110c42d466578bd4c8e16c4ef1d989aeeb4e383bdaee20a68297e069a0e9273ba918850bdd59a0</sha384>
 		<tags>
-			<tag>beta</tag>
+			<tag>rc</tag>
 		</tags>
 		<targetplatform name="joomla" version="3.([789]|10)" />
 	</update>
