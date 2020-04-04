@@ -54,6 +54,6 @@
 		</files>
 	</administration>
 	<updateservers>
-		<server type="extension" name="Patch Tester Component">https://raw.githubusercontent.com/joomla-extensions/patchtester/master/manifest.xml</server>
+		<server type="extension" name="Patch Tester Component">https://raw.githubusercontent.com/joomla-extensions/patchtester/3.0/manifest.xml</server>
 	</updateservers>
 </extension>
