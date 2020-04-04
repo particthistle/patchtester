@@ -4,8 +4,6 @@ rm -rf build/packaging && mkdir build/packaging
 rm -rf build/packages && mkdir build/packages
 composer install --no-dev -o
 cp -r administrator/components/com_patchtester build/packaging/admin
-cp -r administrator/templates/atum/html/com_patchtester build/packaging/atum
-cp -r administrator/templates/hathor/html/com_patchtester build/packaging/hathor
 cp -r media/com_patchtester build/packaging/media
 rm -rf build/packaging/admin/backups/*.txt
 mv build/packaging/admin/patchtester.xml build/packaging/patchtester.xml
