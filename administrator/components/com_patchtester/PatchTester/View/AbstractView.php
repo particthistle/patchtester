@@ -32,7 +32,7 @@ abstract class AbstractView
 	 *
 	 * @since   4.0.0
 	 */
-	public function __construct(AbstractModel $model)
+	public function __construct($model)
 	{
 		$this->model = $model;
 	}

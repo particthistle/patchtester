@@ -8,13 +8,10 @@
 
 namespace PatchTester\Model;
 
-use Joomla\CMS\Form\Form;
-use Joomla\CMS\Form\FormFactoryAwareTrait;
+use Exception;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\MVC\Model\FormBehaviorTrait;
-use Joomla\CMS\Pagination\Pagination;
-use Joomla\Registry\Registry;
+use Joomla\CMS\MVC\Model\ListModel;
 use PatchTester\GitHub\Exception\UnexpectedResponse;
 use PatchTester\Helper;
 
@@ -23,11 +20,8 @@ use PatchTester\Helper;
  *
  * @since  2.0
  */
-class PullsModel extends AbstractModel
+class PullsModel extends ListModel
 {
-	use FormBehaviorTrait;
-	use FormFactoryAwareTrait;
-
 	/**
 	 * The object context
 	 *
@@ -45,20 +39,30 @@ class PullsModel extends AbstractModel
 	protected $sortFields = array('pulls.pull_id', 'pulls.title');
 
 	/**
-	 * Instantiate the model.
+	 * Constructor.
 	 *
-	 * @param   string            $context  The model context.
-	 * @param   Registry          $state    The model state.
-	 * @param   \JDatabaseDriver  $db       The database adpater.
+	 * @param   array  $config  An optional associative array of configuration settings.
 	 *
-	 * @since   2.0
+	 * @since   4.0.0
+	 * @throws  Exception
+	 *
 	 */
-	public function __construct($context, Registry $state = null,
-		\JDatabaseDriver $db = null
-	) {
-		parent::__construct($state, $db);
+	public function __construct($config = [])
+	{
+		$config = [];
 
-		$this->context = $context;
+		if (empty($config['filter_fields']))
+		{
+			$config['filter_fields'] = [
+				'applied',
+				'rtc',
+				'npm',
+				'label',
+				'branch',
+			];
+		}
+
+		parent::__construct($config);
 	}
 
 	/**
@@ -82,7 +86,7 @@ class PullsModel extends AbstractModel
 			$this->getState()->get('list.limit')
 		);
 
-		$db    = $this->getDb();
+		$db    = $this->getDbo();
 		$query = $db->getQuery(true)
 			->select($db->quoteName(['name', 'color']))
 			->from($db->quoteName('#__patchtester_pulls_labels'));
@@ -143,7 +147,7 @@ class PullsModel extends AbstractModel
 	 */
 	protected function getList($query, $limitstart = 0, $limit = 0)
 	{
-		return $this->getDb()->setQuery($query, $limitstart, $limit)
+		return $this->getDbo()->setQuery($query, $limitstart, $limit)
 			->loadObjectList();
 	}
 
@@ -184,7 +188,7 @@ class PullsModel extends AbstractModel
 	protected function getListQuery()
 	{
 		// Create a new query object.
-		$db         = $this->getDb();
+		$db         = $this->getDbo();
 		$query      = $db->getQuery(true);
 		$labelQuery = $db->getQuery(true);
 
@@ -319,121 +323,6 @@ class PullsModel extends AbstractModel
 	}
 
 	/**
-	 * Method to get the starting number of items for the data set.
-	 *
-	 * @return  integer  The starting number of items available in the data set.
-	 *
-	 * @since   2.0
-	 */
-	public function getStart()
-	{
-		$store = $this->getStoreId('getStart');
-
-		// Try to load the data from internal storage.
-		if (isset($this->cache[$store]))
-		{
-			return $this->cache[$store];
-		}
-
-		$start = $this->getState()->get('list.start', 0);
-		$limit = $this->getState()->get('list.limit', 20);
-		$total = $this->getTotal();
-
-		if ($start > $total - $limit)
-		{
-			$start = max(0, (int) (ceil($total / $limit) - 1) * $limit);
-		}
-
-		// Add the total to the internal cache.
-		$this->cache[$store] = $start;
-
-		return $this->cache[$store];
-	}
-
-	/**
-	 * Method to get the total number of items for the data set.
-	 *
-	 * @return  integer  The total number of items available in the data set.
-	 *
-	 * @since   2.0
-	 */
-	public function getTotal()
-	{
-		// Get a storage key.
-		$store = $this->getStoreId('getTotal');
-
-		// Try to load the data from internal storage.
-		if (isset($this->cache[$store]))
-		{
-			return $this->cache[$store];
-		}
-
-		// Load the total and add the total to the internal cache.
-		$this->cache[$store] = (int) $this->getListCount(
-			$this->getListQueryCache()
-		);
-
-		return $this->cache[$store];
-	}
-
-	/**
-	 * Returns a record count for the query.
-	 *
-	 * @param   \JDatabaseQuery|string  $query  The query.
-	 *
-	 * @return  integer  Number of rows for query.
-	 *
-	 * @since   2.0
-	 */
-	protected function getListCount($query)
-	{
-		// Use fast COUNT(*) on JDatabaseQuery objects if there no GROUP BY or HAVING clause:
-		if ($query instanceof \JDatabaseQuery && $query->type == 'select'
-			&& $query->group === null
-			&& $query->having === null)
-		{
-			$query = clone $query;
-			$query->clear('select')->clear('order')->select('COUNT(*)');
-
-			$this->getDb()->setQuery($query);
-
-			return (int) $this->getDb()->loadResult();
-		}
-
-		// Otherwise fall back to inefficient way of counting all results.
-		$this->getDb()->setQuery($query)->execute();
-
-		return (int) $this->getDb()->getNumRows();
-	}
-
-	/**
-	 * Method to get a Pagination object for the data set.
-	 *
-	 * @return  Pagination  A Pagination object for the data set.
-	 *
-	 * @since   2.0
-	 */
-	public function getPagination()
-	{
-		// Get a storage key.
-		$store = $this->getStoreId('getPagination');
-
-		// Try to load the data from internal storage.
-		if (isset($this->cache[$store]))
-		{
-			return $this->cache[$store];
-		}
-
-		// Create the pagination object and add the object to the internal cache.
-		$this->cache[$store] = new Pagination(
-			$this->getTotal(), $this->getStart(),
-			(int) $this->getState()->get('list.limit', 20)
-		);
-
-		return $this->cache[$store];
-	}
-
-	/**
 	 * Retrieves the array of authorized sort fields
 	 *
 	 * @return  array
@@ -460,8 +349,8 @@ class PullsModel extends AbstractModel
 		// If on page 1, dump the old data
 		if ($page === 1)
 		{
-			$this->getDb()->truncateTable('#__patchtester_pulls');
-			$this->getDb()->truncateTable('#__patchtester_pulls_labels');
+			$this->getDbo()->truncateTable('#__patchtester_pulls');
+			$this->getDbo()->truncateTable('#__patchtester_pulls_labels');
 		}
 
 		try
@@ -564,8 +453,8 @@ class PullsModel extends AbstractModel
 						',',
 						[
 							(int) $pull->number,
-							$this->getDb()->quote($label->name),
-							$this->getDb()->quote($label->color),
+							$this->getDbo()->quote($label->name),
+							$this->getDbo()->quote($label->color),
 						]
 					);
 				}
@@ -573,16 +462,16 @@ class PullsModel extends AbstractModel
 				// Build the data object to store in the database
 				$pullData = [
 					(int) $pull->number,
-					$this->getDb()->quote(
+					$this->getDbo()->quote(
 						HTMLHelper::_('string.truncate', $pull->title, 150)
 					),
-					$this->getDb()->quote(
+					$this->getDbo()->quote(
 						HTMLHelper::_('string.truncate', $pull->body, 100)
 					),
-					$this->getDb()->quote($pull->pull_request->html_url),
+					$this->getDbo()->quote($pull->pull_request->html_url),
 					(int) $isRTC,
 					(int) $isNPM,
-					$this->getDb()->quote($branch),
+					$this->getDbo()->quote($branch),
 				];
 
 				$data[] = implode(',', $pullData);
@@ -597,8 +486,8 @@ class PullsModel extends AbstractModel
 
 		try
 		{
-			$this->getDb()->setQuery(
-				$this->getDb()->getQuery(true)
+			$this->getDbo()->setQuery(
+				$this->getDbo()->getQuery(true)
 					->insert('#__patchtester_pulls')
 					->columns(
 						['pull_id', 'title', 'description', 'pull_url',
@@ -607,7 +496,7 @@ class PullsModel extends AbstractModel
 					->values($data)
 			);
 
-			$this->getDb()->execute();
+			$this->getDbo()->execute();
 		}
 		catch (\RuntimeException $exception)
 		{
@@ -625,13 +514,13 @@ class PullsModel extends AbstractModel
 		{
 			try
 			{
-				$this->getDb()->setQuery(
-					$this->getDb()->getQuery(true)
+				$this->getDbo()->setQuery(
+					$this->getDbo()->getQuery(true)
 						->insert('#__patchtester_pulls_labels')
 						->columns(['pull_id', 'name', 'color'])
 						->values($labels)
 				);
-				$this->getDb()->execute();
+				$this->getDbo()->execute();
 			}
 			catch (\RuntimeException $exception)
 			{
@@ -662,73 +551,6 @@ class PullsModel extends AbstractModel
 	 */
 	public function truncateTable()
 	{
-		$this->getDb()->truncateTable('#__patchtester_pulls');
-	}
-
-	/**
-	 * Get the filter form
-	 *
-	 * @param   array    $data      data
-	 * @param   boolean  $loadData  load current data
-	 *
-	 * @return  Form|null  The \JForm object or null if the form can't be found
-	 *
-	 * @since   3.2
-	 */
-	public function getFilterForm($data = array(), $loadData = true)
-	{
-		// Try to locate the filter form automatically. Example: ContentModelArticles => "filter_articles"
-		if (empty($this->filterFormName))
-		{
-			$classNameParts = explode('Model', \get_called_class());
-
-			if (\count($classNameParts) >= 2)
-			{
-				$this->filterFormName = 'filter_' . str_replace('\\', '', strtolower($classNameParts[1]));
-			}
-		}
-
-		if (empty($this->filterFormName))
-		{
-			return null;
-		}
-
-		try
-		{
-			// Get the form.
-			return $this->loadForm($this->context . '.filter', $this->filterFormName, array('control' => '', 'load_data' => $loadData));
-		}
-		catch (\RuntimeException $e)
-		{
-		}
-
-		return null;
-	}
-
-	/**
-	 * Function to get the active filters
-	 *
-	 * @return  array  Associative array in the format: array('filter_published' => 0)
-	 *
-	 * @since   3.2
-	 */
-	public function getActiveFilters()
-	{
-		$activeFilters = array();
-
-		if (!empty($this->filter_fields))
-		{
-			foreach ($this->filter_fields as $filter)
-			{
-				$filterName = 'filter.' . $filter;
-
-				if (property_exists($this->state, $filterName) && (!empty($this->state->{$filterName}) || is_numeric($this->state->{$filterName})))
-				{
-					$activeFilters[$filter] = $this->state->get($filterName);
-				}
-			}
-		}
-
-		return $activeFilters;
+		$this->getDbo()->truncateTable('#__patchtester_pulls');
 	}
 }

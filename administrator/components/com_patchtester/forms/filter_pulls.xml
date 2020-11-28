@@ -5,7 +5,7 @@
 			name="search"
 			type="text"
 			inputmode="search"
-			description="COM_PATCHTESTER_FILTER_SEARCH_DESC"
+			description="COM_PATCHTESTER_FILTER_SEARCH_DESCRIPTION"
 			hint="JSEARCH_FILTER"
 		/>
 
@@ -69,8 +69,14 @@
 	<fields name="list">
 		<field
 			name="fullordering"
-			type="hidden"
-		/>
+			type="list"
+			onchange="this.form.submit();"
+		>
+			<option value="a.title ASC">JGLOBAL_TITLE_ASC</option>
+			<option value="a.title DESC">JGLOBAL_TITLE_DESC</option>
+			<option value="a.pull_id ASC">COM_PATCHTESTER_PULL_ID_ASC</option>
+			<option value="a.pull_id DESC">COM_PATCHTESTER_PULL_ID_DESC</option>
+		</field>
 
 		<field
 			name="limit"

@@ -43,10 +43,15 @@ class FetchController extends AbstractController
 			// Fetch our page from the session
 			$page = $session->get('com_patchtester_fetcher_page', 1);
 
-			$model = new PullsModel('com_patchtester.fetch', null, Factory::getDbo());
+			$model = new PullsModel;
 
 			// Initialize the state for the model
-			$model->setState($this->initializeState($model));
+			$state = $this->initializeState($model);
+
+			foreach ($state as $key => $value)
+			{
+				$model->setState($key, $value);
+			}
 
 			$status = $model->requestFromGithub($page);
 		}

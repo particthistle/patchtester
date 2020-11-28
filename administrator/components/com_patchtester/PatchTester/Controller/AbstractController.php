@@ -93,7 +93,7 @@ abstract class AbstractController
 	 *
 	 * @since   2.0
 	 */
-	protected function initializeState(AbstractModel $model)
+	protected function initializeState($model)
 	{
 		$state = new Registry;
 

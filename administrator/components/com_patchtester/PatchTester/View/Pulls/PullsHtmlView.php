@@ -8,6 +8,7 @@
 
 namespace PatchTester\View\Pulls;
 
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\Language\Text;
@@ -54,14 +55,16 @@ class PullsHtmlView extends DefaultHtmlView
 	/**
 	 * Form object for search filters
 	 *
-	 * @var  Form
+	 * @var   Form
+	 * @since 4.1.0
 	 */
 	public $filterForm;
 
 	/**
 	 * The active search filters
 	 *
-	 * @var  array
+	 * @var   array
+	 * @since 4.1.0
 	 */
 	public $activeFilters;
 
@@ -69,7 +72,7 @@ class PullsHtmlView extends DefaultHtmlView
 	 * The model state
 	 *
 	 * @var    Registry
-	 * @since  2.0
+	 * @since  2.0.0
 	 */
 	protected $state;
 
@@ -86,9 +89,10 @@ class PullsHtmlView extends DefaultHtmlView
 	 *
 	 * @return  string  The rendered view.
 	 *
-	 * @since   2.0
+	 * @since   2.0.0
+	 * @throws  Exception
 	 */
-	public function render()
+	public function render(): string
 	{
 		if (!extension_loaded('openssl'))
 		{
@@ -100,7 +104,6 @@ class PullsHtmlView extends DefaultHtmlView
 			$this->envErrors[] = Text::_('COM_PATCHTESTER_REQUIREMENT_HTTPS');
 		}
 
-		// Only process the data if there are no environment errors
 		if (!count($this->envErrors))
 		{
 			$this->state         = $this->model->getState();
@@ -122,10 +125,8 @@ class PullsHtmlView extends DefaultHtmlView
 
 		$this->addToolbar();
 
-		// Make text strings available in the JavaScript API
 		Text::script('COM_PATCHTESTER_CONFIRM_RESET');
 
-		// Set a warning on 4.0 branch
 		if (version_compare(JVERSION, '4.0', 'ge'))
 		{
 			Factory::getApplication()->enqueueMessage(Text::_('COM_PATCHTESTER_40_WARNING'), 'warning');
@@ -139,7 +140,7 @@ class PullsHtmlView extends DefaultHtmlView
 	 *
 	 * @return  void
 	 *
-	 * @since   2.0
+	 * @since   2.0.0
 	 */
 	protected function addToolbar(): void
 	{
@@ -167,46 +168,5 @@ class PullsHtmlView extends DefaultHtmlView
 		}
 
 		ToolbarHelper::preferences('com_patchtester');
-	}
-
-	/**
-	 * Returns an array of values to be used for pagination limits
-	 *
-	 * @return  array
-	 *
-	 * @since   4.0.0
-	 */
-	protected function getLimitOptions()
-	{
-		return [
-			5   => Text::_('J5'),
-			10  => Text::_('J10'),
-			15  => Text::_('J15'),
-			20  => Text::_('J20'),
-			25  => Text::_('J25'),
-			30  => Text::_('J30'),
-			50  => Text::_('J50'),
-			100 => Text::_('J100'),
-			200 => Text::_('J200'),
-			500 => Text::_('J500'),
-			0   => Text::_('JALL'),
-		];
-	}
-
-	/**
-	 * Returns an array of fields the table can be sorted by
-	 *
-	 * @return  array
-	 *
-	 * @since   2.0
-	 */
-	protected function getSortFields()
-	{
-		return [
-			'a.title ASC'    => Text::_('JGLOBAL_TITLE_ASC'),
-			'a.title DESC'   => Text::_('JGLOBAL_TITLE_DESC'),
-			'a.pull_id ASC'  => Text::_('COM_PATCHTESTER_PULL_ID_ASC'),
-			'a.pull_id DESC' => Text::_('COM_PATCHTESTER_PULL_ID_DESC'),
-		];
 	}
 }

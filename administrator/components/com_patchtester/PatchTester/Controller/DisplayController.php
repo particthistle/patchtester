@@ -97,7 +97,7 @@ class DisplayController extends AbstractController
 	 *
 	 * @since   2.0
 	 */
-	protected function initializeState(AbstractModel $model)
+	protected function initializeState($model)
 	{
 		$state = parent::initializeState($model);
 		$app = $this->getApplication();

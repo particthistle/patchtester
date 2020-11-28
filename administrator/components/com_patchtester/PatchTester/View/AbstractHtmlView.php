@@ -43,7 +43,7 @@ abstract class AbstractHtmlView extends AbstractView
 	 *
 	 * @since   4.0.0
 	 */
-	public function __construct(AbstractModel $model, \SplPriorityQueue $paths = null)
+	public function __construct($model, \SplPriorityQueue $paths = null)
 	{
 		parent::__construct($model);
 
