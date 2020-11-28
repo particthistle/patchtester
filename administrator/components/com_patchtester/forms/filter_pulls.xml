@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form addfieldprefix="PatchTester\Field">
+	<fields name="filter">
+		<field
+			name="search"
+			type="text"
+			inputmode="search"
+			description="COM_PATCHTESTER_FILTER_SEARCH_DESC"
+			hint="JSEARCH_FILTER"
+		/>
+
+		<field
+				name="applied"
+				type="list"
+				default=""
+				validate="options"
+		>
+			<option value="">COM_PATCHTESTER_FILTER_APPLIED_PATCHES</option>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+
+
+		<field
+				name="rtc"
+				type="list"
+				default=""
+				validate="options"
+		>
+			<option value="">COM_PATCHTESTER_FILTER_RTC_PATCHES</option>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+
+		<field
+				name="npm"
+				type="list"
+				default=""
+				validate="options"
+		>
+			<option value="">COM_PATCHTESTER_FILTER_NPM_PATCHES</option>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+
+		<field
+				name="label"
+				type="Label"
+				layout="joomla.form.field.list-fancy-select"
+				hint="COM_PATCHTESTER_FILTER_LABEL"
+				onchange="this.form.submit();"
+				default=""
+				multiple="true"
+		>
+		</field>
+
+		<field
+				name="branch"
+				type="Branch"
+				layout="joomla.form.field.list-fancy-select"
+				hint="COM_PATCHTESTER_FILTER_BRANCH"
+				onchange="this.form.submit();"
+				default=""
+				multiple="true"
+		>
+		</field>
+	</fields>
+
+	<fields name="list">
+		<field
+			name="fullordering"
+			type="hidden"
+		/>
+
+		<field
+			name="limit"
+			type="limitbox"
+			label="JGLOBAL_LIST_LIMIT"
+			default="25"
+			onchange="this.form.submit();"
+		/>
+	</fields>
+</form>

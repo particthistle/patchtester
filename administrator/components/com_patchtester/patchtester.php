@@ -11,7 +11,6 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 
-// Access check.
 if (!Factory::getUser()->authorise('core.manage', 'com_patchtester'))
 {
 	throw new RuntimeException(Text::_('JERROR_ALERTNOAUTHOR'), 403);

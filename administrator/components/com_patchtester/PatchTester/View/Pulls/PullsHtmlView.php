@@ -9,6 +9,7 @@
 namespace PatchTester\View\Pulls;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Form\Form;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Pagination\Pagination;
 use Joomla\CMS\Toolbar\Toolbar;
@@ -22,26 +23,10 @@ use PatchTester\View\DefaultHtmlView;
  *
  * @since  2.0
  *
- * @property-read  \PatchTester\Model\PullsModel  $model  The model object.
+ * @property-read  \PatchTester\Model\PullsModel $model  The model object.
  */
 class PullsHtmlView extends DefaultHtmlView
 {
-	/**
-	 * Array containing the list of branches
-	 *
-	 * @var    array
-	 * @since  3.0.0
-	 */
-	protected $branches = [];
-
-	/**
-	 * Array containing the list of labels
-	 *
-	 * @var    array
-	 * @since  4.0.0
-	 */
-	protected $labels = [];
-
 	/**
 	 * Array containing environment errors
 	 *
@@ -65,6 +50,20 @@ class PullsHtmlView extends DefaultHtmlView
 	 * @since  2.0
 	 */
 	protected $pagination;
+
+	/**
+	 * Form object for search filters
+	 *
+	 * @var  Form
+	 */
+	public $filterForm;
+
+	/**
+	 * The active search filters
+	 *
+	 * @var  array
+	 */
+	public $activeFilters;
 
 	/**
 	 * The model state
@@ -104,12 +103,15 @@ class PullsHtmlView extends DefaultHtmlView
 		// Only process the data if there are no environment errors
 		if (!count($this->envErrors))
 		{
-			$this->state        = $this->model->getState();
-			$this->items        = $this->model->getItems();
-			$this->pagination   = $this->model->getPagination();
-			$this->trackerAlias = TrackerHelper::getTrackerAlias($this->state->get('github_user'), $this->state->get('github_repo'));
-			$this->branches     = $this->model->getBranches();
-			$this->labels       = $this->model->getLabels();
+			$this->state         = $this->model->getState();
+			$this->items         = $this->model->getItems();
+			$this->pagination    = $this->model->getPagination();
+			$this->filterForm    = $this->model->getFilterForm();
+			$this->activeFilters = $this->model->getActiveFilters();
+			$this->trackerAlias  = TrackerHelper::getTrackerAlias(
+				$this->state->get('github_user'),
+				$this->state->get('github_repo')
+			);
 		}
 
 		// Change the layout if there are environment errors

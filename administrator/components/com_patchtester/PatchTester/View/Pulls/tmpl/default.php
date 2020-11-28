@@ -9,6 +9,7 @@
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Router\Route;
 
 /** @var  \PatchTester\View\Pulls\PullsHtmlView  $this */
@@ -28,6 +29,7 @@ $searchToolsOptions = array(
 
 HTMLHelper::_('behavior.core');
 HTMLHelper::_('searchtools.form', '#adminForm', $searchToolsOptions);
+HTMLHelper::_('behavior.multiselect');
 HTMLHelper::_('stylesheet', 'com_patchtester/octicons.css', ['version' => '3.5.0', 'relative' => true]);
 HTMLHelper::_('script', 'com_patchtester/patchtester.js', ['version' => 'auto', 'relative' => true]);
 
@@ -49,6 +51,7 @@ if ($filterApplied || $filterBranch || $filterLabel || $filterRtc || $filterNpm)
 	<div class="row">
 		<div class="col-md-12">
 			<div id="j-main-container" class="j-main-container">
+				<?php echo LayoutHelper::render('joomla.searchtools.default', ['view' => $this]); ?>
 				<div class="js-stools" role="search">
 					<div class="js-stools-container-bar">
 						<div class="btn-toolbar">

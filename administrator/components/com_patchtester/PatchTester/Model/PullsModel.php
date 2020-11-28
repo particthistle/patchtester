@@ -8,8 +8,11 @@
 
 namespace PatchTester\Model;
 
+use Joomla\CMS\Form\Form;
+use Joomla\CMS\Form\FormFactoryAwareTrait;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Model\FormBehaviorTrait;
 use Joomla\CMS\Pagination\Pagination;
 use Joomla\Registry\Registry;
 use PatchTester\GitHub\Exception\UnexpectedResponse;
@@ -22,6 +25,9 @@ use PatchTester\Helper;
  */
 class PullsModel extends AbstractModel
 {
+	use FormBehaviorTrait;
+	use FormFactoryAwareTrait;
+
 	/**
 	 * The object context
 	 *
@@ -53,51 +59,6 @@ class PullsModel extends AbstractModel
 		parent::__construct($state, $db);
 
 		$this->context = $context;
-	}
-
-	/**
-	 * Method to get an array of branches.
-	 *
-	 * @return  array
-	 *
-	 * @since   3.0.0
-	 */
-	public function getBranches(): array
-	{
-		$db    = $this->getDb();
-		$query = $db->getQuery(true);
-
-		// Select distinct branches excluding empty values
-		$query->select('DISTINCT(branch) AS text')
-			->from('#__patchtester_pulls')
-			->where($db->quoteName('branch') . ' != ' . $db->quote(''))
-			->order('branch ASC');
-
-		return $db->setQuery($query)->loadAssocList();
-	}
-
-	/**
-	 * Method to get an array of labels.
-	 *
-	 * @return  array The list of labels
-	 *
-	 * @since   4.0.0
-	 */
-	public function getLabels(): array
-	{
-		$db    = $this->getDb();
-		$query = $db->getQuery(true);
-
-		// Select distinct branches excluding empty values
-		$query->select(
-			'DISTINCT(' . $db->quoteName('name') . ') AS ' . $db->quoteName(
-				'text'
-			)
-		)
-			->from($db->quoteName('#__patchtester_pulls_labels'))
-			->order($db->quoteName('name') . ' ASC');
-
-		return $db->setQuery($query)->loadAssocList();
 	}
 
 	/**
@@ -702,5 +663,72 @@ class PullsModel extends AbstractModel
 	public function truncateTable()
 	{
 		$this->getDb()->truncateTable('#__patchtester_pulls');
+	}
+
+	/**
+	 * Get the filter form
+	 *
+	 * @param   array    $data      data
+	 * @param   boolean  $loadData  load current data
+	 *
+	 * @return  Form|null  The \JForm object or null if the form can't be found
+	 *
+	 * @since   3.2
+	 */
+	public function getFilterForm($data = array(), $loadData = true)
+	{
+		// Try to locate the filter form automatically. Example: ContentModelArticles => "filter_articles"
+		if (empty($this->filterFormName))
+		{
+			$classNameParts = explode('Model', \get_called_class());
+
+			if (\count($classNameParts) >= 2)
+			{
+				$this->filterFormName = 'filter_' . str_replace('\\', '', strtolower($classNameParts[1]));
+			}
+		}
+
+		if (empty($this->filterFormName))
+		{
+			return null;
+		}
+
+		try
+		{
+			// Get the form.
+			return $this->loadForm($this->context . '.filter', $this->filterFormName, array('control' => '', 'load_data' => $loadData));
+		}
+		catch (\RuntimeException $e)
+		{
+		}
+
+		return null;
+	}
+
+	/**
+	 * Function to get the active filters
+	 *
+	 * @return  array  Associative array in the format: array('filter_published' => 0)
+	 *
+	 * @since   3.2
+	 */
+	public function getActiveFilters()
+	{
+		$activeFilters = array();
+
+		if (!empty($this->filter_fields))
+		{
+			foreach ($this->filter_fields as $filter)
+			{
+				$filterName = 'filter.' . $filter;
+
+				if (property_exists($this->state, $filterName) && (!empty($this->state->{$filterName}) || is_numeric($this->state->{$filterName})))
+				{
+					$activeFilters[$filter] = $this->state->get($filterName);
+				}
+			}
+		}
+
+		return $activeFilters;
 	}
 }
