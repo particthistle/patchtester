@@ -38,7 +38,7 @@ https://www.youtube.com/watch?v=s881RLaFO8U ( patch tester 3.0 beta 3 - 2017 )
 GitHub Two Factor Authentication
 =============
 
-To use an account that has two factor authentication enabled, you'll have to [create a personal access token on GitHub](https://github.com/settings/applications) and store that token in the "GitHub Account Password" option in the component's config.
+To use an account that has two factor authentication enabled, you'll have to [create a personal access token on GitHub](https://github.com/settings/tokens) and store that token in the "GitHub Account Password" option in the component's config.
 
 Translations
 =============
