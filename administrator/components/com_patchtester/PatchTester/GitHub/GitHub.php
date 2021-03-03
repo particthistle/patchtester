@@ -211,6 +211,25 @@ class GitHub
 		return $this->processResponse($this->client->get($prepared['url'], $prepared['headers']));
 	}
 
+		/**
+	 * Get a list of the open pull requests for a repository.
+	 *
+	 * @param   string   $user   The name of the owner of the GitHub repository.
+	 * @param   string   $repo   The name of the GitHub repository.
+	 * @param   integer  $page   The page number from which to get items.
+	 * @param   integer  $limit  The number of items on a page.
+	 *
+	 * @return  Response
+	 *
+	 * @since   3.0.0
+	 */
+	public function getOpenPulls($user, $repo, $page = 0, $limit = 0)
+	{
+		$prepared = $this->prepareRequest("/repos/$user/$repo/pulls", $page, $limit);
+
+		return $this->processResponse($this->client->get($prepared['url'], $prepared['headers']));
+	}
+	
 	/**
 	 * Get an option from the connector.
 	 *
