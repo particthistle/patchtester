@@ -52,6 +52,71 @@ class GitHub
 	}
 
 	/**
+	 * Get the HTTP client for this connector.
+	 *
+	 * @return  Http
+	 *
+	 * @since   3.0.0
+	 */
+	public function getClient()
+	{
+		return $this->client;
+	}
+
+	/**
+	 * Get the diff for a pull request.
+	 *
+	 * @param   string   $user    The name of the owner of the GitHub repository.
+	 * @param   string   $repo    The name of the GitHub repository.
+	 * @param   integer  $pullId  The pull request number.
+	 *
+	 * @return  Response
+	 *
+	 * @since   3.0.0
+	 */
+	public function getDiffForPullRequest($user, $repo, $pullId)
+	{
+		// Build the request path.
+		$path = "/repos/$user/$repo/pulls/" . (int) $pullId;
+
+		// Build the request headers.
+		$headers = array('Accept' => 'application/vnd.github.diff');
+
+		$prepared = $this->prepareRequest($path, 0, 0, $headers);
+
+		return $this->processResponse(
+			$this->client->get($prepared['url'], $prepared['headers'])
+		);
+	}
+
+	/**
+	 * Method to build and return a full request URL for the request.
+	 *
+	 * This method will add appropriate pagination details if necessary and also prepend the API url to have a complete URL for the request.
+	 *
+	 * @param   string   $path     Path to process
+	 * @param   integer  $page     Page to request
+	 * @param   integer  $limit    Number of results to return per page
+	 * @param   array    $headers  The headers to send with the request
+	 *
+	 * @return  array  Associative array containing the prepared URL and request headers
+	 *
+	 * @since   3.0.0
+	 */
+	protected function prepareRequest($path, $page = 0, $limit = 0,
+		array $headers = array()
+	) {
+		$url = $this->fetchUrl($path, $page, $limit);
+
+		if ($token = $this->options->get('gh.token', false))
+		{
+			$headers['Authorization'] = "token $token";
+		}
+
+		return array('url' => $url, 'headers' => $headers);
+	}
+
+	/**
 	 * Build and return a full request URL.
 	 *
 	 * This method will add appropriate pagination details and basic authentication credentials if necessary
@@ -107,39 +172,32 @@ class GitHub
 	}
 
 	/**
-	 * Get the HTTP client for this connector.
+	 * Process the response and return it.
 	 *
-	 * @return  Http
-	 *
-	 * @since   3.0.0
-	 */
-	public function getClient()
-	{
-		return $this->client;
-	}
-
-	/**
-	 * Get the diff for a pull request.
-	 *
-	 * @param   string   $user    The name of the owner of the GitHub repository.
-	 * @param   string   $repo    The name of the GitHub repository.
-	 * @param   integer  $pullId  The pull request number.
+	 * @param   Response  $response      The response.
+	 * @param   integer   $expectedCode  The expected response code.
 	 *
 	 * @return  Response
 	 *
 	 * @since   3.0.0
+	 * @throws  Exception\UnexpectedResponse
 	 */
-	public function getDiffForPullRequest($user, $repo, $pullId)
+	protected function processResponse(Response $response, $expectedCode = 200)
 	{
-		// Build the request path.
-		$path = "/repos/$user/$repo/pulls/" . (int) $pullId;
+		// Validate the response code.
+		if ($response->code != $expectedCode)
+		{
+			// Decode the error response and throw an exception.
+			$body  = json_decode($response->body);
+			$error = isset($body->error) ? $body->error
+				: (isset($body->message) ? $body->message : 'Unknown Error');
 
-		// Build the request headers.
-		$headers = array('Accept' => 'application/vnd.github.diff');
+			throw new Exception\UnexpectedResponse(
+				$response, $error, $response->code
+			);
+		}
 
-		$prepared = $this->prepareRequest($path, 0, 0, $headers);
-
-		return $this->processResponse($this->client->get($prepared['url'], $prepared['headers']));
+		return $response;
 	}
 
 	/**
@@ -168,7 +226,9 @@ class GitHub
 			$prepared['url'] = (string) $url;
 		}
 
-		return $this->processResponse($this->client->get($prepared['url'], $prepared['headers']));
+		return $this->processResponse(
+			$this->client->get($prepared['url'], $prepared['headers'])
+		);
 	}
 
 	/**
@@ -189,7 +249,9 @@ class GitHub
 
 		$prepared = $this->prepareRequest($path);
 
-		return $this->processResponse($this->client->get($prepared['url'], $prepared['headers']));
+		return $this->processResponse(
+			$this->client->get($prepared['url'], $prepared['headers'])
+		);
 	}
 
 	/**
@@ -206,12 +268,16 @@ class GitHub
 	 */
 	public function getOpenIssues($user, $repo, $page = 0, $limit = 0)
 	{
-		$prepared = $this->prepareRequest("/repos/$user/$repo/issues", $page, $limit);
+		$prepared = $this->prepareRequest(
+			"/repos/$user/$repo/issues", $page, $limit
+		);
 
-		return $this->processResponse($this->client->get($prepared['url'], $prepared['headers']));
+		return $this->processResponse(
+			$this->client->get($prepared['url'], $prepared['headers'])
+		);
 	}
 
-		/**
+	/**
 	 * Get a list of the open pull requests for a repository.
 	 *
 	 * @param   string   $user   The name of the owner of the GitHub repository.
@@ -225,11 +291,15 @@ class GitHub
 	 */
 	public function getOpenPulls($user, $repo, $page = 0, $limit = 0)
 	{
-		$prepared = $this->prepareRequest("/repos/$user/$repo/pulls", $page, $limit);
+		$prepared = $this->prepareRequest(
+			"/repos/$user/$repo/pulls", $page, $limit
+		);
 
-		return $this->processResponse($this->client->get($prepared['url'], $prepared['headers']));
+		return $this->processResponse(
+			$this->client->get($prepared['url'], $prepared['headers'])
+		);
 	}
-	
+
 	/**
 	 * Get an option from the connector.
 	 *
@@ -263,7 +333,9 @@ class GitHub
 
 		$prepared = $this->prepareRequest($path);
 
-		return $this->processResponse($this->client->get($prepared['url'], $prepared['headers']));
+		return $this->processResponse(
+			$this->client->get($prepared['url'], $prepared['headers'])
+		);
 	}
 
 	/**
@@ -277,59 +349,9 @@ class GitHub
 	{
 		$prepared = $this->prepareRequest('/rate_limit');
 
-		return $this->processResponse($this->client->get($prepared['url'], $prepared['headers']));
-	}
-
-	/**
-	 * Process the response and return it.
-	 *
-	 * @param   Response  $response      The response.
-	 * @param   integer   $expectedCode  The expected response code.
-	 *
-	 * @return  Response
-	 *
-	 * @since   3.0.0
-	 * @throws  Exception\UnexpectedResponse
-	 */
-	protected function processResponse(Response $response, $expectedCode = 200)
-	{
-		// Validate the response code.
-		if ($response->code != $expectedCode)
-		{
-			// Decode the error response and throw an exception.
-			$body  = json_decode($response->body);
-			$error = isset($body->error) ? $body->error : (isset($body->message) ? $body->message : 'Unknown Error');
-
-			throw new Exception\UnexpectedResponse($response, $error, $response->code);
-		}
-
-		return $response;
-	}
-
-	/**
-	 * Method to build and return a full request URL for the request.
-	 *
-	 * This method will add appropriate pagination details if necessary and also prepend the API url to have a complete URL for the request.
-	 *
-	 * @param   string   $path     Path to process
-	 * @param   integer  $page     Page to request
-	 * @param   integer  $limit    Number of results to return per page
-	 * @param   array    $headers  The headers to send with the request
-	 *
-	 * @return  array  Associative array containing the prepared URL and request headers
-	 *
-	 * @since   3.0.0
-	 */
-	protected function prepareRequest($path, $page = 0, $limit = 0, array $headers = array())
-	{
-		$url = $this->fetchUrl($path, $page, $limit);
-
-		if ($token = $this->options->get('gh.token', false))
-		{
-			$headers['Authorization'] = "token $token";
-		}
-
-		return array('url' => $url, 'headers' => $headers);
+		return $this->processResponse(
+			$this->client->get($prepared['url'], $prepared['headers'])
+		);
 	}
 
 	/**
