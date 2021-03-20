@@ -135,27 +135,6 @@ class GitHub
 		// Get a new Uri object using the API URL and given path.
 		$uri = new Uri($this->options->get('api.url') . $path);
 
-		// Only apply basic authentication if an access token is not set
-		if ($this->options->get('gh.token', false) === false)
-		{
-			// Use basic authentication
-			if ($this->options->get('api.username', false))
-			{
-				$username = $this->options->get('api.username');
-				$username = str_replace('@', '%40', $username);
-				$username = str_replace('#', '%23', $username);
-				$uri->setUser($username);
-			}
-
-			if ($this->options->get('api.password', false))
-			{
-				$password = $this->options->get('api.password');
-				$password = str_replace('@', '%40', $password);
-				$password = str_replace('#', '%23', $password);
-				$uri->setPass($password);
-			}
-		}
-
 		// If we have a defined page number add it to the JUri object.
 		if ($page > 0)
 		{
